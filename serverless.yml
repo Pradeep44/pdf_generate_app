@@ -8,7 +8,7 @@ provider:
 
 plugins:
   - serverless-offline
-
+  - serverless-dotenv-plugin
 functions:
   app:
     timeout: 2000
