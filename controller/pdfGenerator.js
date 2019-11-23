@@ -54,19 +54,20 @@ module.exports =async function(req,res,next){
       page.setContent(html)
 
     // create pdf file
+      let r = Math.random().toString(36).substring(2,7);
       const pdf = await page.pdf({
-        path:'./temp/g.pdf',
+        path:`./temp/${r}.pdf`,
         format:'A4',
         printBackground: true,
         margin:{top:'1 cm', right: '1 cm', bottom: '1 cm', left:'1 cm'}
       })      
       
-      var stat = fs.statSync('./temp/g.pdf');
+      var stat = fs.statSync(`./temp/${r}.pdf`);
       res.setHeader('Content-Length', stat.size);
       
       // res.setHeader("content-type", "application/pdf");
       console.log("end")
-      var data = fs.readFileSync('./temp/g.pdf');
+      var data = fs.readFileSync(`./temp/${r}.pdf`);
       res.contentType("application/pdf");
       // res.setHeader('Content-Disposition', 'attachment; filename=g.pdf');
 
