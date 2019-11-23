@@ -1,0 +1,52 @@
+head
+  style.
+    .mainContainer {
+    display: flex;
+    padding: 1rem;
+    border: 5px solid darkblue;
+    }
+    .childContainer{
+    flex: 1;
+    }
+    .leftContainer{
+    align-content: center;
+    }
+    .rightContainer{
+    align-content:center;
+    }
+    .header{
+    text-align:center;
+    }
+each item in array
+    div
+        p=item.name
+//- each student in studentsWithUnlinkedGuardians
+//-     div(class = 'mainContainer')
+//-         div(class = 'childContainer')
+//-             div(class = 'leftContainer')
+//-             img
+//-             div(class = 'header')
+//-                 | From Kopila App,you can get daily
+//-                 br
+//-                 |  updates of your child from a mobile
+//-                 br
+//-                 | app.
+//-             div(class = 'header')
+//-                 p=student.name
+//-                 p=student.faculty
+//-             each guardian in student.guardians
+//-                 p= guardian.relation
+//-                 p= guardian.token
+                        
+//-         div(class = 'childContainer')
+//-             div(class = 'rightContainer')
+//-             | To start using Kopila app, follow these instructions
+//-             //- ol
+//-             //-     li
+//-             //-     | Download Kopila app from Play Store(for Android devices) or App Store(iOS devices)
+//-             //-     li Open Kopila app and click
+//-             //-     li
+//-             //-     | Download Kopila app from Play Store(for Android devices) or App Store(iOS devices)
+//-             //-     li Open Kopila app and click
+//-             //-     li
+//-             //-     | Download Kopila app from Play Store(for Android devices) or App Store(iOS devices)

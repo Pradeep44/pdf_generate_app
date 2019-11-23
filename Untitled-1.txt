@@ -1,0 +1,46 @@
+  module.exports.pdf = async (event, context) => {
+    //create html
+  const template = pug.compileFile('./src/template.pug')
+  const html = template({studentListWithGuardiansToken})
+  
+  //open puppeteer
+  let browser = null
+  try{
+    browser = await chromium.puppeteer.launch({
+      args:chromium.args,
+      defaultViewport:chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless
+    })
+    const page = await browser.newPage()
+    page.setContent(html)
+
+  //create pdf file
+    const pdf = await page.pdf({
+      format:'A4',
+      printBackground: true,
+      margin:{top:'1 cm', right: '1 cm', bottom: '1 cm', left:'1 cm'}
+    })
+
+  //return pdf
+  const response = {
+    headers: {
+      'Content-type': 'application/pdf',
+      'content-disposition': 'attachment; filename=test.pdf'
+    },
+    statusCode: 200,
+    body: pdf.toString('base64'),
+    isBase64Encoded: true
+  }
+  context.succeed(response)
+  //console.log("Run till here")
+}catch(error){
+  console.log({error})
+    return context.fail(error)
+  }
+  finally {
+    if (browser !== null) {
+      await browser.close()
+    }
+  }
+}
