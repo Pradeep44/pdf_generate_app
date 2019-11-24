@@ -3,15 +3,30 @@ service: pdf-generate-app
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: dev
+  stage: ${opt:stage}
   region: ap-south-1
 
 plugins:
   - serverless-offline
   - serverless-dotenv-plugin
+
+custom:
+    stages:
+      - dev
+      - prod
+    mongouri:
+      dev: ${env:DEV_MONGO_URI}
+      prod: ${env:PROD_MONGO_URI}
+    mongouser:
+      dev: ${env:DEV_MONGO_USER}
+      prod: ${env:PROD_MONGO_USER}
+    mongopassword:
+      dev: ${env:DEV_MONGO_PASSWORD}
+      prod: ${env:PROD_MONGO_PASSWORD}
+
 functions:
   app:
-    timeout: 2000
+    timeout: 900
     handler: app.server # reference the file and exported method
     events: # events trigger lambda functions
       - http: # this is an API Gateway HTTP event trigger
@@ -24,6 +39,9 @@ functions:
           cors: true
     
     environment:
-      mongoUri: ${env:MONGO_URI}
-      mongoUser: ${env:MONGO_USER}
-      mongoPassword: ${env:MONGO_PASSWORD}
+      mongoUri: ${self:custom.mongouri.${self:provider.stage}}
+      mongoUser: ${self:custom.mongouser.${self:provider.stage}}
+      mongoPassword: ${self:custom.mongopassword.${self:provider.stage}}
+      # mongoUri: ${env:MONGO_URI}
+      # mongoUser: ${env:MONGO_USER}
+      # mongoPassword: ${env:MONGO_PASSWORD}
