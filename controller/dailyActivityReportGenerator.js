@@ -7,6 +7,8 @@ const Attendance = require('../models/attendance')
 const User = require('../models/user')
 const Metrics = require('../models/metrics')
 const Timeframe = require('../models/timeframe')
+const Faculty = require('../models/faculty')
+const Guardian = require('../models/guardian')
 
 module.exports =async function(req,res,next){
     try{
@@ -27,11 +29,11 @@ module.exports =async function(req,res,next){
             endDate = new Date(endDateInfo);
             endDate.setHours(23,59,99,999);
         }
+
+        //Teacher data
         var totalActivities = 0;
         var totalMoments = 0;
         const teachers = await Teacher.find({institution:institutionid})
-
-        //Teacher data
         const teacherDetails = await Promise.all(teachers.map(async teacher => {
             const moments = await Moment.find({createdBy:teacher._id,    
                 createdAt: {
@@ -66,7 +68,6 @@ module.exports =async function(req,res,next){
             }
             return item
         }))
-        
         var diaryColl = []
         var attendanceColl = []
         const students = await Student.find({institution:institutionid})
@@ -97,6 +98,7 @@ module.exports =async function(req,res,next){
             attendanceRecord:attendanceColl.length
         }
 
+        //Parents Daily Data
         const activeGuardians = await User.find({institution:institutionid,role:"guardian",lastActive:{
                     $gte: startDate,
                     $lt: endDate
@@ -118,25 +120,60 @@ module.exports =async function(req,res,next){
         if(timeframe){
         //console.log("TF",timeframe);
         const metrics = await Metrics.findOne({timeframe:timeframe._id,institution:institutionid})
-        //Parents Daily Data
-        parentsDailyData= {
-            active:activeGuardians.length,
-            signedDiaries:diaryColl.length,
-            remarksAdded:parentActivities.length,
-            notification:metrics.notifications_per_student
-        }
+            parentsDailyData= {
+                active:activeGuardians.length,
+                signedDiaries:diaryColl.length,
+                remarksAdded:parentActivities.length,
+                notification:metrics.notifications_per_student
+            }
         }else{
-        parentsDailyData= {
-            active:activeGuardians.length,
-            signedDiaries:diaryColl.length,
-            remarksAdded:parentActivities.length,
-            notification:0
+            parentsDailyData= {
+                active:activeGuardians.length,
+                signedDiaries:diaryColl.length,
+                remarksAdded:parentActivities.length,
+                notification:0
             }
         }
+
+        //Unlinked Guardians List
+        //(students already declared in teacherdetails section)
+        const studentsWithDetails = await Promise.all(students.map(async student => {
+        const guardians = await Promise.all(student.guardians.map(async g => {
+            return Guardian.findOne({_id:g.guardian})
+        })); 
+        if (guardians.every(guardian => guardian.linking.token.status !== 'linked')){
+            if(student.academics.length > 0){
+                const faculty = await Faculty.findOne({_id:student.academics[0].faculty});
+                const studentWithDetails ={
+                    name:student.name,
+                    faculty:faculty.name,
+                    guardians:student.guardians.map(g => ({
+                        relation: g.relation, 
+                        token: guardians.find(guardian => guardian._id.equals(g.guardian)).linking.token.code
+                    }))
+                }
+                return studentWithDetails;
+            }else{
+                const studentWithDetails ={
+                    name:student.name,
+                    faculty:"",
+                    guardians:student.guardians.map(g => ({
+                        relation: g.relation, 
+                        token: guardians.find(guardian => guardian._id.equals(g.guardian)).linking.token.code
+                    }))
+                }
+                return studentWithDetails;
+            }
+        }else{
+            return null;
+        }
+        }));
+        const studentsWithUnlinkedGuardians = studentsWithDetails.filter(s => s);
         var data ={
             parentsDailyData:parentsDailyData,
             preschoolDailyData:preschoolDailyData,
-            teacherDetails:teacherDetails 
+            teacherDetails:teacherDetails,
+            unlinkedGuardians:studentsWithUnlinkedGuardians
         }
         res.json(data);
     }catch(e){

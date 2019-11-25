@@ -1,52 +1,114 @@
-head
-  style.
-    .mainContainer {
-    display: flex;
-    padding: 1rem;
-    border: 5px solid darkblue;
-    }
-    .childContainer{
-    flex: 1;
-    }
-    .leftContainer{
-    align-content: center;
-    }
-    .rightContainer{
-    align-content:center;
-    }
-    .header{
-    text-align:center;
-    }
-each item in array
-    div
-        p=item.name
-//- each student in studentsWithUnlinkedGuardians
-//-     div(class = 'mainContainer')
-//-         div(class = 'childContainer')
-//-             div(class = 'leftContainer')
-//-             img
-//-             div(class = 'header')
-//-                 | From Kopila App,you can get daily
-//-                 br
-//-                 |  updates of your child from a mobile
-//-                 br
-//-                 | app.
-//-             div(class = 'header')
-//-                 p=student.name
-//-                 p=student.faculty
-//-             each guardian in student.guardians
-//-                 p= guardian.relation
-//-                 p= guardian.token
-                        
-//-         div(class = 'childContainer')
-//-             div(class = 'rightContainer')
-//-             | To start using Kopila app, follow these instructions
-//-             //- ol
-//-             //-     li
-//-             //-     | Download Kopila app from Play Store(for Android devices) or App Store(iOS devices)
-//-             //-     li Open Kopila app and click
-//-             //-     li
-//-             //-     | Download Kopila app from Play Store(for Android devices) or App Store(iOS devices)
-//-             //-     li Open Kopila app and click
-//-             //-     li
-//-             //-     | Download Kopila app from Play Store(for Android devices) or App Store(iOS devices)
+html
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(http-equiv='X-UA-Compatible', content='ie=edge')
+    title Document
+    style.
+      .mainContainer {
+      display: flex;
+      padding: 1rem 0;
+      border: 2px solid #8080807a;
+      }
+      .mainContainer__children {
+      flex: 1;
+      padding:0 1rem
+      }
+      .mainContainer__children:nth-child(1) {
+      border-right: 2px solid #8080807a;
+      flex: 1;
+      }
+      .logoImage {
+      display:flex;
+      justify-content: center;
+      margin-bottom:1rem;
+      }
+      .heading1{
+      margin-bottom:1rem;
+      text-align: center;
+      }
+      .student {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom:1rem;
+      }
+      .parent {
+      display: flex;
+      justify-content: space-between;
+      }
+      .parent__detail {
+      display: flex;
+      flex-direction: column;
+      }
+      .parent_token{
+      text-align: center;
+      }
+      .heading2{
+      margin-bottom:1rem;
+      }
+      .instruction__point{
+      display:flex;
+      margin-bottom:1rem;
+      }
+      .instruction__number{
+      min-width:1.2rem;
+      max-width:1.2rem;
+      min-height:1.2rem;
+      max-height:1.2rem;
+      border:2px solid grey;
+      border-radius: 1rem;
+      display:flex;
+      justify-content: center;
+      align-items: center;
+      margin-right:0.5rem;
+      }
+      .number{
+      display:flex;
+      align-items: center;
+      }
+      .instruction__detail{
+      color:grey;
+      }
+  each student in studentsWithUnlinkedGuardians    
+    div(class = 'mainContainer')
+        div(class = 'mainContainer__children')
+          div(class = 'logoImage')
+            img(height='80px', width='auto', src='https://kopila.co/wp-content/uploads/2018/09/logo-3.png')
+          div(class = 'heading1')
+            | From Kopila app, you can get daily updates of your child from a mobile app.
+          div(class = 'student')
+            div
+              p=student.name
+            div
+              p=student.faculty
+          div(class = 'parent')
+          each guardian in student.guardians
+            div(class = 'parent__detail')
+              div(class = 'parent_identity')
+                p=guardian.relation
+              div(class = 'parent_token')
+                p=guardian.token
+        div(class = 'mainContainer__children')
+          div(class = 'heading2')
+            | To start using Kopila app, follow these
+            | instructions
+          div
+            div(class = 'instruction__point')
+              div(class = 'instruction__number')
+                div(class = 'number 1')
+              div(class = 'instruction__detail')
+                | Download Kopila app from Play Store (for
+                | Android devices) or App Store (iOS devices)
+            div(class = 'instruction__point')
+              div(class = 'instruction__number')
+                div(class = 'number 1')
+              div(class = 'instruction__detail')
+                | Download Kopila app from Play Store (for
+                | Android devices) or App Store (iOS devices)
+            div(class = 'instruction__point')
+              div(class = 'instruction__number')
+                div(class = 'number 1')
+              div(class = 'instruction__detail')
+                | Download Kopila app from Play Store (for
+                | Android devices) or App Store (iOS devices)

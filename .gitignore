@@ -7,6 +7,6 @@ jspm_packages
 
 #File
 .env
-
+.pdf
 #Directory
 temp
