@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 
 const pdfGenerateRequestController = require('./controller/pdfGenerator')
 const dailyActivityRouter = require('./controller/dailyActivityReportGenerator')
+const genericCardRequestRouter = require('./controller/genericCardGenerator')
 
 mongoose.connect(process.env.mongoUri, {
   user:process.env.mongoUser,
@@ -16,7 +17,7 @@ app.use(cors())
 
 app.get('/',pdfGenerateRequestController);
 app.get('/activities',dailyActivityRouter);
-
+app.get('/genericcard', genericCardRequestRouter);
 
 
 module.exports.server = sls(app)

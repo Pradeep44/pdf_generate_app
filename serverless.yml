@@ -3,7 +3,7 @@ service: pdf-generate-app
 provider:
   name: aws
   runtime: nodejs8.10
-  stage: ${opt:stage}
+  stage: ${opt:stage, "dev"}
   region: ap-south-1
 
 plugins:
@@ -37,7 +37,7 @@ functions:
           path: /{proxy+}
           method: ANY
           cors: true
-    
+
     environment:
       mongoUri: ${self:custom.mongouri.${self:provider.stage}}
       mongoUser: ${self:custom.mongouser.${self:provider.stage}}

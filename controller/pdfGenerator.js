@@ -51,6 +51,7 @@ module.exports =async function(req,res,next){
     const template = pug.compileFile('./src/template.pug')
     const html = template({studentsWithUnlinkedGuardians})
     //open puppeteer
+    console.log("dumy",html)
     let browser = null
     try{
       browser = await chromium.puppeteer.launch({

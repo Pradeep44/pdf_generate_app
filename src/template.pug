@@ -83,12 +83,13 @@ html
             div
               p=student.faculty
           div(class = 'parent')
-          each guardian in student.guardians
-            div(class = 'parent__detail')
-              div(class = 'parent_identity')
-                p=guardian.relation
-              div(class = 'parent_token')
-                p=guardian.token
+            each guardian in student.guardians
+              div(class = 'parent__detail')
+                div(class = 'parent_identity')
+                - var relation = guardian.relation
+                p #{relation}'s token
+                div(class = 'parent_token')
+                  p=guardian.token
         div(class = 'mainContainer__children')
           div(class = 'heading2')
             | To start using Kopila app, follow these

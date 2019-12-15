@@ -18,6 +18,9 @@ const teacherSchema = new Schema({
         user:{
             type:Schema.Types.ObjectID
         }
+    },
+    isAdmin:{
+        type: Boolean
     }
 },
 {timestamps:true})
