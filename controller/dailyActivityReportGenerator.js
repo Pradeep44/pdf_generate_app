@@ -1,3 +1,4 @@
+const Institution = require('../models/institution')
 const Teacher = require('../models/teacher')
 const Moment = require('../models/moment')
 const Activities = require('../models/activities')
@@ -13,7 +14,7 @@ const Guardian = require('../models/guardian')
 module.exports =async function(req,res,next){
     try{
         //console.log(req.query)
-        var {institutionid, startDateInfo, endDateInfo} = req.query;
+        var {institutionshortid, startDateInfo, endDateInfo} = req.query;
         var startDate, endDate;
         if(!startDateInfo){
             startDate = new Date();
@@ -29,13 +30,14 @@ module.exports =async function(req,res,next){
             endDate = new Date(endDateInfo);
             endDate.setHours(23,59,99,999);
         }
+        var institution = await Institution.findOne({shortid:institutionshortid})
 
         //Teacher data
         var totalActivities = 0;
         var totalMoments = 0;
-        const teachers = await Teacher.find({institution:institutionid})
+        const teachers = await Teacher.find({institution:institution._id})
         const teacherDetails = await Promise.all(teachers.map(async teacher => {
-            const moments = await Moment.find({createdBy:teacher._id,    
+            const moments = await Moment.find({createdBy:teacher.linking.user,    
                 createdAt: {
                     $gte: startDate,
                     $lt: endDate
@@ -70,7 +72,7 @@ module.exports =async function(req,res,next){
         }))
         var diaryColl = []
         var attendanceColl = []
-        const students = await Student.find({institution:institutionid})
+        const students = await Student.find({institution:institution._id})
         await Promise.all(students.map(async student =>{
         const diary = await Diary.findOne({student:student._id,signed:true,
                 createdAt: {
@@ -99,7 +101,7 @@ module.exports =async function(req,res,next){
         }
 
         //Parents Daily Data
-        const activeGuardians = await User.find({institution:institutionid,role:"guardian",lastActive:{
+        const activeGuardians = await User.find({institution:institution._id,role:"guardian",lastActive:{
                     $gte: startDate,
                     $lt: endDate
                 }})
@@ -119,7 +121,7 @@ module.exports =async function(req,res,next){
         var parentsDailyData = {}
         if(timeframe){
         //console.log("TF",timeframe);
-        const metrics = await Metrics.findOne({timeframe:timeframe._id,institution:institutionid})
+        const metrics = await Metrics.findOne({timeframe:timeframe._id,institution:institution._id})
             parentsDailyData= {
                 active:activeGuardians.length,
                 signedDiaries:diaryColl.length,

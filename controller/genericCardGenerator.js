@@ -4,12 +4,14 @@ var Teacher = require('../models/teacher')
 
 
 module.exports = async function(req,res,next){
+    //console.log(`Triggered`)
     const institutions = await Institution.find({_id:"5c8b08750914f663f2ff1297"});
     await Promise.all(institutions.map(async institution => {
-        var teacher = await Teacher.findOne({institution: institution._id, isAdmin: true})
+        var teachers = await Teacher.find({institution: institution._id, isAdmin: true})
         //console.log(teacher);
-        if(teacher != null){
-            console.log(institution.name,teacher.name,`${teacher._id}`,`${institution._id}`)
+        if(teachers != null){
+            //console.log(institution.name,teacher.name,`${teacher._id}`,`${institution._id}`)
+        await Promise.all(teachers.map(async teacher => {
             var options = { 
                     method: 'GET',
                     url: 'https://app.kopila.co/generic-card-hook',
@@ -41,9 +43,9 @@ module.exports = async function(req,res,next){
                 };
                 request(options, function (error, response, body) {
                 if (error) throw new Error(error);
-                console.log(body);
+                // console.log(body);
                 });
-
+            }))
         }
     }))
     return res.send("Success")

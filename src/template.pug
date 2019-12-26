@@ -9,6 +9,7 @@ html
       display: flex;
       padding: 1rem 0;
       border: 2px solid #8080807a;
+      font-family: sans-serif;
       }
       .mainContainer__children {
       flex: 1;
@@ -26,16 +27,27 @@ html
       .heading1{
       margin-bottom:1rem;
       text-align: center;
+      line-height:1.5;
       }
       .student {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom:1rem;
+      }
+      .student_name {
+      font-size: 16px;
+      font-weight: bold;
+      padding:15px 0 5px 0;
+      }
+      .faculty {
+      padding:5px 0 10px 0;
       }
       .parent {
       display: flex;
       justify-content: space-between;
+      }
+      .parent_identity {
+      color:grey;
       }
       .parent__detail {
       display: flex;
@@ -43,9 +55,13 @@ html
       }
       .parent_token{
       text-align: center;
+      font-weight: bold;
+      font-size: 20px;
+      padding: 0 0 0 0;
       }
       .heading2{
       margin-bottom:1rem;
+      line-height:1.5;
       }
       .instruction__point{
       display:flex;
@@ -69,27 +85,28 @@ html
       }
       .instruction__detail{
       color:grey;
+      line-height:1.5;
       }
   each student in studentsWithUnlinkedGuardians    
     div(class = 'mainContainer')
         div(class = 'mainContainer__children')
           div(class = 'logoImage')
-            img(height='80px', width='auto', src='https://kopila.co/wp-content/uploads/2018/09/logo-3.png')
+            img(height='80px', width='auto', src='https://firebasestorage.googleapis.com/v0/b/kopila-byte.appspot.com/o/logo%2Flogo.png?alt=media&token=92404939-d2f5-4813-9925-6fd5dd08080c')
           div(class = 'heading1')
             | From Kopila app, you can get daily updates of your child from a mobile app.
           div(class = 'student')
-            div
-              p=student.name
-            div
-              p=student.faculty
+            div(class = 'student_name')
+              div=student.name
+            div(class = 'faculty')
+              div=student.faculty
           div(class = 'parent')
             each guardian in student.guardians
               div(class = 'parent__detail')
                 div(class = 'parent_identity')
                 - var relation = guardian.relation
-                p #{relation}'s token
+                p(class = 'parent_identity') #{relation}'s Token
                 div(class = 'parent_token')
-                  p=guardian.token
+                  div=guardian.token
         div(class = 'mainContainer__children')
           div(class = 'heading2')
             | To start using Kopila app, follow these
@@ -97,19 +114,23 @@ html
           div
             div(class = 'instruction__point')
               div(class = 'instruction__number')
-                div(class = 'number 1')
+                div(class = 'number 1') 1
               div(class = 'instruction__detail')
                 | Download Kopila app from Play Store (for
                 | Android devices) or App Store (iOS devices)
             div(class = 'instruction__point')
               div(class = 'instruction__number')
-                div(class = 'number 1')
+                div(class = 'number 1') 2
               div(class = 'instruction__detail')
-                | Download Kopila app from Play Store (for
-                | Android devices) or App Store (iOS devices)
+                | Click "Login with Facebook" button and signin
+                | to Facebook if required
             div(class = 'instruction__point')
               div(class = 'instruction__number')
-                div(class = 'number 1')
+                div(class = 'number 1') 3
               div(class = 'instruction__detail')
-                | Download Kopila app from Play Store (for
-                | Android devices) or App Store (iOS devices)
+                | Enter token code provided in this sheet
+            div(class = 'instruction__point')
+              div(class = 'instruction__number')
+                div(class = 'number 1') 4
+              div(class = 'instruction__detail')
+                | Now you can get daily updates in Kopila

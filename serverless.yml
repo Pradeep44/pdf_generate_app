@@ -1,4 +1,4 @@
-service: pdf-generate-app
+service: pdf-generating-app
 
 provider:
   name: aws

@@ -4,13 +4,15 @@ const fs = require('fs')
 // const path = require('path')
 // const fs = require('fs')
 
+const Institution = require('../models/institution') 
 const Student = require('../models/student')
 const Faculty = require('../models/faculty')
 const Guardian = require('../models/guardian')
 
 module.exports =async function(req,res,next){
-    var { institutionid } = req.query;
-    var students = await Student.find({institution:institutionid});
+    var { institutionshortid } = req.query;
+    var institution = await Institution.findOne({shortid:institutionshortid})
+    var students = await Student.find({institution:institution._id});
     const studentsWithDetails = await Promise.all(students.map(async student => {
       const guardians = await Promise.all(student.guardians.map(async g => {
         return Guardian.findOne({_id:g.guardian})
@@ -51,7 +53,6 @@ module.exports =async function(req,res,next){
     const template = pug.compileFile('./src/template.pug')
     const html = template({studentsWithUnlinkedGuardians})
     //open puppeteer
-    console.log("dumy",html)
     let browser = null
     try{
       browser = await chromium.puppeteer.launch({
