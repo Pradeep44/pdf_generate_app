@@ -9,31 +9,28 @@ module.exports = async function(req, res, next){
     startDate.setHours(0,0,0,0);
     startDate.setDate(0);
   
-  var allGuardians = await Guardian.find({institution:institution._id});
+  var students = await Student.find({institution:institution._id});
   var inactiveUsers = [];
   var inactiveUsersPhoneColl = [];
-  await Promise.all(allGuardians.map(async g =>{
-    var user = await User.findOne({_id:g.linking.token.user})
-    if(user){
-      var time = new Date(user.lastActive);
-      if(time < startDate){
-        var item = {
-          name:g.name,
-          phoneNumber:g.mobileNumber
-        };
-        inactiveUsers.push(item);
-        inactiveUsersPhoneColl.push(g.mobileNumber);
+  await Promise.all(students.map( async student =>{
+  await Promise.all(student.guardians.map(async g => {
+      var guardian = await Guardian.findOne({_id:g.guardian});
+      var user = await User.findOne({_id:guardian.linking.token.user})
+      if(user){
+        var time = new Date(user.lastActive);
+        if(time < startDate){
+          var item = {
+            name:guardian.name,
+            phoneNumber:guardian.mobileNumber,
+            relation:g.relation,
+            student:student.name
+          };
+          inactiveUsersPhoneColl.push(guardian.mobileNumber);
+          inactiveUsers.push(item);
+        }
       }
-    // }else{
-    //   var item = {
-    //     name:g.name,
-    //     phoneNumber:g.mobileNumber
-    //   };
-    //   inactiveUsers.push(item);
-    //   inactiveUsersPhoneColl.push(g.mobileNumber);
-    }
+    }));
   }))
-  //console.log("InactiveParentsPhoneList",inactiveUsersPhoneColl.join());
-  var inactiveUsersPhoneList =inactiveUsersPhoneColl.join();
+  var inactiveUsersPhoneList=inactiveUsersPhoneColl.join();
   res.send({inactiveUsers,inactiveUsersPhoneList});
 }
